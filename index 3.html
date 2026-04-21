@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stock新手">
+<meta name="theme-color" content="#080B12">
+<title>Stock新手 — 股市新手完全指南</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#080B12;--sf:#0F1420;--sf2:#171D2E;--sf3:#1E2638;
+  --b1:rgba(255,255,255,0.05);--b2:rgba(255,255,255,0.10);--b3:rgba(255,255,255,0.16);
+  --ac:#C8F53A;--ac2:#3AFFA0;--rd:#FF4E6A;--am:#FFB347;--bl:#3AB8FF;
+  --tx:#EEF2FF;--mu:#5A6282;--mu2:#8890AA;
+  --fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:15px}
+::-webkit-scrollbar{display:none}
+
+/* SHELL */
+.shell{display:flex;flex-direction:column;height:100svh;max-width:430px;margin:0 auto;position:relative}
+
+/* TOPBAR */
+.topbar{
+  padding:calc(var(--sat) + 12px) 20px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg);border-bottom:1px solid var(--b1);
+  flex-shrink:0;z-index:20;position:relative;
+}
+.logo{font-family:var(--fh);font-size:21px;font-weight:800;letter-spacing:-.5px}
+.logo em{color:var(--ac);font-style:normal}
+.top-r{display:flex;align-items:center;gap:8px}
+.live-pill{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;background:rgba(200,245,58,0.07);border:1px solid rgba(200,245,58,0.18);font-size:11px;color:var(--ac);font-weight:600}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--ac);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.rbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid var(--b2);background:none;color:var(--mu2);font-size:12px;cursor:pointer;font-family:var(--fb);transition:.15s}
+.rbtn:active{opacity:.6}
+.rbtn.spin svg{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PAGES */
+.pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;padding:14px 18px calc(74px + var(--sab));display:none;animation:up .2s ease}
+.page.on{display:block}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAVBAR */
+.navbar{
+  padding:8px 0 calc(var(--sab) + 6px);
+  background:rgba(8,11,18,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-top:1px solid var(--b2);display:flex;flex-shrink:0;z-index:20;position:relative;
+}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;padding:4px 0;transition:.15s}
+.ni svg{width:22px;height:22px;stroke:var(--mu);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:.2s}
+.ni span{font-size:10px;color:var(--mu);font-family:var(--fb);font-weight:500;transition:.2s}
+.ni.on svg{stroke:var(--ac)}
+.ni.on span{color:var(--ac)}
+
+/* TYPOGRAPHY */
+.sl{font-family:var(--fh);font-size:10px;font-weight:700;color:var(--mu);letter-spacing:2.5px;text-transform:uppercase;margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+.sl::after{content:'';flex:1;height:1px;background:var(--b1)}
+
+/* CARDS */
+.card{background:var(--sf);border:1px solid var(--b2);border-radius:18px;padding:16px;margin-bottom:10px;position:relative;overflow:hidden}
+
+/* HERO */
+.hero{background:var(--sf2);border:1px solid var(--b2);border-radius:22px;padding:20px;margin-bottom:10px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(200,245,58,0.06) 0%,transparent 65%);pointer-events:none}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.tg{background:rgba(200,245,58,0.1);color:var(--ac)}
+.tr{background:rgba(255,78,106,0.1);color:var(--rd)}
+.ta{background:rgba(255,179,71,0.1);color:var(--am)}
+.tb{background:rgba(58,184,255,0.1);color:var(--bl)}
+
+/* TICKER STRIP */
+.strip{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px}
+.tc{background:var(--sf);border:1px solid var(--b1);border-radius:13px;padding:10px 14px;flex-shrink:0;min-width:96px}
+.ts{font-size:10px;color:var(--mu2);font-weight:700;font-family:var(--fh);margin-bottom:4px}
+.tv{font-size:15px;font-weight:700;font-family:var(--fh)}
+.tch{font-size:10px;margin-top:2px;font-weight:600}
+
+/* ROW */
+.row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--b1)}
+.row:last-child{border-bottom:none}
+.rl{font-size:13px;color:var(--mu2)}
+.rr{font-size:13px;font-weight:500}
+
+/* SIGNAL */
+.sig{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--b1)}
+.sig:last-child{border-bottom:none}
+.sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.dg{background:var(--ac);box-shadow:0 0 8px rgba(200,245,58,.4)}
+.dr{background:var(--rd);box-shadow:0 0 8px rgba(255,78,106,.4)}
+.da{background:var(--am);box-shadow:0 0 8px rgba(255,179,71,.3)}
+.sm{font-size:13px;font-weight:500;margin-bottom:2px}
+.ss{font-size:11px;color:var(--mu2);line-height:1.5}
+
+/* INDICATOR GRID */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.ic{background:var(--sf2);border:1px solid var(--b1);border-radius:15px;padding:14px}
+.il{font-size:11px;color:var(--mu2);margin-bottom:6px;font-weight:500}
+.iv{font-family:var(--fh);font-size:24px;font-weight:800;line-height:1}
+.isub{font-size:11px;margin-top:5px;font-weight:500}
+
+/* RSI BAR */
+.rtrack{position:relative;height:36px;background:var(--sf2);border-radius:10px;overflow:hidden;margin:10px 0 6px}
+.rzone{position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:10px}
+.rptr{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--ac);border:3px solid var(--bg);transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(200,245,58,.55);transition:left .5s ease}
+
+/* CALC */
+.rrow{margin:13px 0}
+.rrow label{display:flex;justify-content:space-between;font-size:12px;color:var(--mu2);margin-bottom:6px}
+.rrow label strong{color:var(--tx);font-weight:600}
+input[type=range]{width:100%;-webkit-appearance:none;height:3px;background:var(--sf3);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--ac);border-radius:50%;border:3px solid var(--bg);box-shadow:0 0 10px rgba(200,245,58,.3)}
+.cres{background:var(--sf2);border-radius:16px;padding:16px;margin-top:10px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.rcell{background:var(--sf3);border-radius:12px;padding:12px}
+.rcl{font-size:11px;color:var(--mu2);margin-bottom:5px}
+.rcv{font-family:var(--fh);font-size:16px;font-weight:800}
+.rbar{height:6px;border-radius:3px;overflow:hidden;display:flex;gap:2px;margin:10px 0 4px}
+.rbg{background:var(--ac);border-radius:3px;transition:flex .5s}
+.rbr{background:var(--rd);border-radius:3px;transition:flex .5s}
+.rhint{border-radius:12px;padding:11px 14px;font-size:12px;line-height:1.6;margin-top:12px;border:1px solid transparent}
+
+/* STEPS */
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--b1)}
+.step:last-child{border-bottom:none}
+.stepn{width:30px;height:30px;border-radius:50%;background:var(--sf2);border:1px solid var(--b3);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:13px;font-weight:800;color:var(--ac);flex-shrink:0;margin-top:1px}
+.stept{font-size:13px;font-weight:600;margin-bottom:3px}
+.stepd{font-size:12px;color:var(--mu2);line-height:1.55}
+
+/* NEWS */
+.ni2{padding:12px 0;border-bottom:1px solid var(--b1);cursor:pointer;text-decoration:none;display:block}
+.ni2:last-child{border-bottom:none}
+.nsrc{font-size:10px;color:var(--bl);margin-bottom:4px;font-weight:700;letter-spacing:.5px}
+.ntitle{font-size:13px;line-height:1.5;color:var(--tx)}
+.ntime{font-size:11px;color:var(--mu);margin-top:4px}
+
+/* SKELETON */
+.sk{background:var(--sf2);border-radius:8px;animation:shim 1.5s infinite}
+@keyframes shim{0%,100%{opacity:.3}50%{opacity:.7}}
+
+/* WARN */
+.warn{background:rgba(255,179,71,.06);border:1px solid rgba(255,179,71,.2);border-radius:12px;padding:12px;font-size:12px;color:var(--am);line-height:1.6;margin-top:10px}
+
+/* ERROR BOX */
+.errbox{background:rgba(255,78,106,.06);border:1px solid rgba(255,78,106,.2);border-radius:12px;padding:14px;font-size:12px;color:var(--rd);text-align:center;line-height:1.6}
+
+/* iOS INSTALL HINT */
+.hint-bar{background:var(--sf2);border:1px solid rgba(200,245,58,.2);border-radius:16px;padding:13px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.hint-icon{width:42px;height:42px;border-radius:11px;background:var(--ac);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:20px;font-weight:800;color:#080B12;flex-shrink:0}
+.hint-tx{flex:1}
+.hint-t{font-size:13px;font-weight:600;margin-bottom:3px}
+.hint-s{font-size:11px;color:var(--mu2);line-height:1.5}
+.hint-x{background:none;border:none;color:var(--mu2);font-size:18px;cursor:pointer;padding:0 4px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo"><em>Stock</em>新手</div>
+  <div class="top-r">
+    <div class="live-pill"><div class="live-dot"></div>即時</div>
+    <button class="rbtn" id="rbtn" onclick="refresh()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 18.49 15"/>
+      </svg>更新
+    </button>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div class="pages">
+
+<!-- ▶ HOME -->
+<div id="pg-home" class="page on">
+  <div id="ios-hint"></div>
+  <div class="sl">大盤即時行情</div>
+  <div class="hero">
+    <div style="font-size:12px;color:var(--mu2);margin-bottom:4px">台灣加權指數 TWII</div>
+    <div id="hp" style="font-family:var(--fh);font-size:38px;font-weight:800;letter-spacing:-1.5px;min-height:44px"><div class="sk" style="width:160px;height:38px;border-radius:6px"></div></div>
+    <div id="hc" style="font-size:13px;font-weight:500;margin-top:6px"></div>
+    <div id="ht" style="font-size:11px;color:var(--mu);margin-top:6px"></div>
+    <div id="htags" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+  <div class="sl">核心指數</div>
+  <div class="strip" id="strip"><div class="tc"><div class="ts">載入中</div><div class="sk" style="width:60px;height:16px;border-radius:4px;margin-top:4px"></div></div></div>
+  <div class="sl">市場訊號分析</div>
+  <div class="card" id="sig-home"><div class="sk" style="height:90px;border-radius:10px"></div></div>
+  <div class="sl">今日財經新聞</div>
+  <div class="card" id="news-box"><div class="sk" style="height:100px;border-radius:10px"></div></div>
+</div>
+
+<!-- ▶ TREND -->
+<div id="pg-trend" class="page">
+  <div class="sl">即時技術指標</div>
+  <div class="ig" id="igrid">
+    <div class="ic"><div class="il">台股加權</div><div class="sk" style="height:28px;border-radius:5px"></div></div>
+    <div class="ic"><div class="il">RSI 估算</div><div class="sk" style="height:28px;border-radius:5px"></div></div>
+    <div class="ic"><div class="il">今日漲跌</div><div class="sk" style="height:28px;border-radius:5px"></div></div>
+    <div class="ic"><div class="il">趨勢判斷</div><div class="sk" style="height:28px;border-radius:5px"></div></div>
+  </div>
+  <div class="sl">RSI 超買超賣區間</div>
+  <div class="card">
+    <div class="rtrack">
+      <div class="rzone" style="left:0;width:30%;background:rgba(58,255,160,.08);color:var(--ac2)">超賣 &lt;30</div>
+      <div class="rzone" style="left:30%;width:40%;color:var(--mu2)">中性 30–70</div>
+      <div class="rzone" style="right:0;width:30%;background:rgba(255,78,106,.08);color:var(--rd)">超買 &gt;70</div>
+      <div class="rptr" id="rptr" style="left:50%"></div>
+    </div>
+    <div id="rdesc" style="font-size:12px;color:var(--mu2)">載入中...</div>
+  </div>
+  <div class="sl">均線系統解讀</div>
+  <div class="card" id="macard"><div class="sk" style="height:80px;border-radius:10px"></div></div>
+  <div class="sl">量價關係法則</div>
+  <div class="card">
+    <div class="row"><span class="rl">價漲量增</span><span style="color:var(--ac);font-size:13px;font-weight:600">✓ 真實上漲</span></div>
+    <div class="row"><span class="rl">價漲量縮</span><span style="color:var(--rd);font-size:13px;font-weight:600">⚠ 假突破</span></div>
+    <div class="row"><span class="rl">價跌量增</span><span style="color:var(--rd);font-size:13px;font-weight:600">⚠ 主力出貨</span></div>
+    <div class="row"><span class="rl">價跌量縮</span><span style="color:var(--am);font-size:13px;font-weight:600">◐ 正常回檔</span></div>
+  </div>
+</div>
+
+<!-- ▶ SIGNAL -->
+<div id="pg-signal" class="page">
+  <div class="sl">進場訊號</div>
+  <div class="card">
+    <div class="sig"><div class="sdot dg"></div><div><div class="sm">突破前高 + 量能放大</div><div class="ss">主力介入確認，最強進場訊號</div></div></div>
+    <div class="sig"><div class="sdot dg"></div><div><div class="sm">均線多頭排列（5日&gt;20日&gt;60日）</div><div class="ss">趨勢向上，買在均線回測處風險最低</div></div></div>
+    <div class="sig"><div class="sdot dg"></div><div><div class="sm">RSI 從 30 以下反彈突破 35</div><div class="ss">超賣反彈機會，搭配量能確認</div></div></div>
+    <div class="sig"><div class="sdot dg"></div><div><div class="sm">大盤站上 20 日均線</div><div class="ss">市場偏多環境，個股勝率大幅提升</div></div></div>
+  </div>
+  <div class="sl">出場訊號</div>
+  <div class="card">
+    <div class="sig"><div class="sdot dr"></div><div><div class="sm">獲利達目標（建議 15–20%）</div><div class="ss">分批賣出，先出 50% 落袋為安</div></div></div>
+    <div class="sig"><div class="sdot dr"></div><div><div class="sm">跌破買進成本 8%，強制停損</div><div class="ss">紀律停損是保護本金的最重要習慣</div></div></div>
+    <div class="sig"><div class="sdot dr"></div><div><div class="sm">均線死亡交叉（5日穿越20日向下）</div><div class="ss">趨勢轉空確認，降低持股比重</div></div></div>
+    <div class="sig"><div class="sdot dr"></div><div><div class="sm">RSI &gt; 75 且量能萎縮</div><div class="ss">漲多縮量，主力可能正在出貨</div></div></div>
+  </div>
+  <div class="sl">目前市場環境</div>
+  <div class="card" id="sig-env"><div class="sk" style="height:80px;border-radius:10px"></div></div>
+  <div class="sl">風控三鐵則</div>
+  <div class="card">
+    <div class="row"><span class="rl">單一個股資金上限</span><span class="rr" style="color:var(--ac)">20%</span></div>
+    <div class="row"><span class="rl">停損設定時機</span><span class="rr" style="color:var(--ac)">進場前就設好</span></div>
+    <div class="row"><span class="rl">借貸 / 融資操作</span><span class="rr" style="color:var(--rd)">新手絕對禁止</span></div>
+  </div>
+</div>
+
+<!-- ▶ CALC -->
+<div id="pg-calc" class="page">
+  <div class="sl">獲利停損試算</div>
+  <div class="card">
+    <div class="rrow"><label><span>投入資金</span><strong id="vc">100,000 元</strong></label><input type="range" min="10000" max="1000000" step="10000" value="100000" id="sc" oninput="dc()"></div>
+    <div class="rrow"><label><span>買進股價</span><strong id="vb">50 元</strong></label><input type="range" min="5" max="1000" step="1" value="50" id="sb" oninput="dc()"></div>
+    <div class="rrow"><label><span>目標獲利</span><strong id="vp" style="color:var(--ac2)">15%</strong></label><input type="range" min="3" max="60" step="1" value="15" id="sp" oninput="dc()"></div>
+    <div class="rrow"><label><span>停損設定</span><strong id="vl" style="color:var(--rd)">8%</strong></label><input type="range" min="2" max="25" step="1" value="8" id="sl2" oninput="dc()"></div>
+  </div>
+  <div class="cres">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:12px;color:var(--mu2)">獲利 ／ 風險比</span>
+      <span id="vrat" style="font-family:var(--fh);font-size:22px;font-weight:800;color:var(--ac)">—</span>
+    </div>
+    <div class="rbar"><div class="rbg" id="bg" style="flex:15"></div><div class="rbr" id="br" style="flex:8"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--ac)">▮ 獲利</span><span style="color:var(--rd)">虧損 ▮</span></div>
+    <div class="rgrid">
+      <div class="rcell"><div class="rcl">可買股數</div><div class="rcv" id="rsh">—</div></div>
+      <div class="rcell"><div class="rcl">目標賣出價</div><div class="rcv" id="rtp" style="color:var(--ac2)">—</div></div>
+      <div class="rcell"><div class="rcl">最大獲利</div><div class="rcv" id="rgn" style="color:var(--ac)">—</div></div>
+      <div class="rcell"><div class="rcl">最大虧損</div><div class="rcv" id="rls" style="color:var(--rd)">—</div></div>
+    </div>
+    <div class="rhint" id="rh"></div>
+  </div>
+  <div class="sl">配置建議</div>
+  <div class="card">
+    <div class="row"><span class="rl">ETF 核心部位</span><span class="rr">50–70%</span></div>
+    <div class="row"><span class="rl">個股積極部位</span><span class="rr">20–30%</span></div>
+    <div class="row"><span class="rl">現金保留</span><span class="rr">10–20%</span></div>
+  </div>
+</div>
+
+<!-- ▶ GUIDE -->
+<div id="pg-guide" class="page">
+  <div class="sl">新手入門 7 步驟</div>
+  <div class="card">
+    <div class="step"><div class="stepn">1</div><div><div class="stept">整理財務，確認閒置資金</div><div class="stepd">先建立 6 個月緊急備用金，再用真正閒置的錢投資。生活費絕對不能進股市。</div></div></div>
+    <div class="step"><div class="stepn">2</div><div><div class="stept">開立證券帳戶</div><div class="stepd">推薦元大、富邦、永豐等大型券商，App 操作友善，支援零股交易。</div></div></div>
+    <div class="step"><div class="stepn">3</div><div><div class="stept">先用模擬帳戶練習 30 天</div><div class="stepd">不虧真錢，熟悉看盤介面、掛單流程，練習判斷進出場時機。</div></div></div>
+    <div class="step"><div class="stepn">4</div><div><div class="stept">從 ETF 開始（首選 0050）</div><div class="stepd">追蹤台灣前 50 大企業，天然分散風險，跟著台灣整體經濟走，不需要選股技巧。</div></div></div>
+    <div class="step"><div class="stepn">5</div><div><div class="stept">學習基本技術分析</div><div class="stepd">掌握均線（MA）、RSI 強弱指數、成交量三項核心工具，配合本 App 趨勢頁判斷。</div></div></div>
+    <div class="step"><div class="stepn">6</div><div><div class="stept">建立交易日誌</div><div class="stepd">每次買賣記錄進場理由、目標價、停損價、結果。3 個月後回頭看，找出自己盲點。</div></div></div>
+    <div class="step"><div class="stepn">7</div><div><div class="stept">持續學習，不追明牌</div><div class="stepd">建立自己的分析系統，才能在市場長期生存獲利。</div></div></div>
+  </div>
+  <div class="sl">新手必讀觀念</div>
+  <div class="card">
+    <div class="row"><span class="rl">複利效果（長期持有）</span><span class="tag tg">威力強大</span></div>
+    <div class="row"><span class="rl">頻繁交易手續費損耗</span><span class="tag tr">新手殺手</span></div>
+    <div class="row"><span class="rl">追高殺低情緒操作</span><span class="tag tr">務必避免</span></div>
+    <div class="row"><span class="rl">定期定額分散風險</span><span class="tag tg">強烈推薦</span></div>
+    <div class="row"><span class="rl">看財報選優質公司</span><span class="tag tb">進階技巧</span></div>
+  </div>
+  <div class="warn">⚠ 免責聲明：本網站所有內容僅供學習與教育用途，不構成任何投資建議。市場資料由第三方 API 提供，可能有延遲。投資有風險，請謹慎決策，必要時諮詢合格投資顧問。</div>
+</div>
+
+</div><!-- pages -->
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <button class="ni on" onclick="nav('home',this)">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V21H15v-5h-6v5H3z"/></svg>
+    <span>首頁</span>
+  </button>
+  <button class="ni" onclick="nav('trend',this)">
+    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <span>趨勢</span>
+  </button>
+  <button class="ni" onclick="nav('signal',this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M22.61 2.39a14 14 0 0 1 0 19.22M1.39 2.39a14 14 0 0 0 0 19.22"/></svg>
+    <span>訊號</span>
+  </button>
+  <button class="ni" onclick="nav('calc',this)">
+    <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
+    <span>試算</span>
+  </button>
+  <button class="ni" onclick="nav('guide',this)">
+    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    <span>入門</span>
+  </button>
+</div>
+
+</div><!-- shell -->
+
+<script>
+// ─── NAV ────────────────────────────────────────────────
+function nav(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  el.classList.add('on');
+}
+
+// ─── iOS HINT ───────────────────────────────────────────
+(function(){
+  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone=('standalone' in navigator)&&navigator.standalone;
+  if(isIos&&!isStandalone&&!sessionStorage.hintDone){
+    document.getElementById('ios-hint').innerHTML=`
+    <div class="hint-bar">
+      <div class="hint-icon">S</div>
+      <div class="hint-tx">
+        <div class="hint-t">加入主畫面，像 App 使用</div>
+        <div class="hint-s">點 Safari <strong style="color:var(--ac)">分享</strong> 按鈕 → 「<strong style="color:var(--ac)">加入主畫面</strong>」</div>
+      </div>
+      <button class="hint-x" onclick="this.closest('.hint-bar').remove();sessionStorage.hintDone=1">✕</button>
+    </div>`;
+  }
+})();
+
+// ─── CALC ───────────────────────────────────────────────
+function dc(){
+  const cap=+document.getElementById('sc').value;
+  const buy=+document.getElementById('sb').value;
+  const prf=+document.getElementById('sp').value;
+  const lss=+document.getElementById('sl2').value;
+  document.getElementById('vc').textContent=cap.toLocaleString()+' 元';
+  document.getElementById('vb').textContent=buy+' 元';
+  document.getElementById('vp').textContent=prf+'%';
+  document.getElementById('vl').textContent=lss+'%';
+  const shares=Math.floor(cap/buy/1000)*1000||Math.floor(cap/buy);
+  const tp=(buy*(1+prf/100)).toFixed(1);
+  const sp2=(buy*(1-lss/100)).toFixed(1);
+  const gn=Math.round(shares*(tp-buy));
+  const ls=Math.round(shares*(buy-sp2));
+  const ratio=ls>0?(gn/ls).toFixed(1):'∞';
+  document.getElementById('rsh').textContent=shares.toLocaleString()+' 股';
+  document.getElementById('rtp').textContent=tp+' 元';
+  document.getElementById('rgn').textContent='+'+gn.toLocaleString();
+  document.getElementById('rls').textContent='-'+ls.toLocaleString();
+  document.getElementById('vrat').textContent=ratio+' : 1';
+  document.getElementById('bg').style.flex=gn;
+  document.getElementById('br').style.flex=Math.max(ls,1);
+  const h=document.getElementById('rh');
+  if(parseFloat(ratio)>=2){
+    h.style.cssText='background:rgba(200,245,58,.06);border-color:rgba(200,245,58,.2);color:var(--ac)';
+    h.textContent='✓ 比值 '+ratio+':1，設定優良！請嚴守這個紀律執行。';
+  }else{
+    h.style.cssText='background:rgba(255,179,71,.06);border-color:rgba(255,179,71,.2);color:var(--am)';
+    h.textContent='⚠ 比值 '+ratio+':1 偏低，建議提高獲利目標或縮小停損，讓比值達 2:1 以上。';
+  }
+}
+dc();
+
+// ─── MARKET DATA (via allorigins CORS proxy) ─────────────
+const SYMS={
+  '^TWII':'台灣加權',
+  '0050.TW':'0050',
+  '0056.TW':'0056',
+  '2330.TW':'台積電',
+  '2317.TW':'鴻海',
+  '^N225':'日經225',
+  '^GSPC':'S&P500'
+};
+let MD={};
+let lastUpd=null;
+
+async function fetchQ(sym){
+  // corsproxy.io：直接回傳原始 body，無需解包 {contents}
+  const target=encodeURIComponent(
+    'https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&range=5d'
+  );
+  const url=`https://corsproxy.io/?${target}`;
+  const res=await fetch(url,{signal:AbortSignal.timeout(8000)});
+  if(!res.ok)throw new Error('http '+res.status);
+  // corsproxy.io 直接吐出原始 JSON，不需要再 JSON.parse(outer.contents)
+  let json;
+  try{json=await res.json();}
+  catch{throw new Error('json parse failed for '+sym);}
+  // 防錯：Yahoo API 結構改變時避免 TypeError
+  const result=json?.chart?.result?.[0];
+  if(!result?.meta)throw new Error('unexpected yahoo structure for '+sym);
+  const meta=result.meta;
+  const price=meta.regularMarketPrice;
+  const prev=meta.chartPreviousClose??meta.previousClose;
+  if(price==null||prev==null)throw new Error('null price for '+sym);
+  return{sym,price,prev,state:meta.marketState??'UNKNOWN'};
+}
+
+const CACHE_KEY='stockMD_v1';
+
+// 啟動時從快取還原，讓 App 秒開顯示舊資料
+function loadCache(){
+  try{
+    const raw=localStorage.getItem(CACHE_KEY);
+    if(raw){
+      const{data,ts}=JSON.parse(raw);
+      MD=data;
+      lastUpd=new Date(ts);
+      renderHome();renderTrend();
+    }
+  }catch(e){console.warn('cache read failed',e);}
+}
+
+function saveCache(){
+  try{
+    localStorage.setItem(CACHE_KEY,JSON.stringify({data:MD,ts:lastUpd?.toISOString()}));
+  }catch(e){console.warn('cache write failed',e);}
+}
+
+// 非同步渲染：每抓到一個標的就立即更新畫面，不等其他請求
+async function fetchAll(){
+  const syms=Object.keys(SYMS);
+  let ok=0;
+  await Promise.allSettled(syms.map(async sym=>{
+    try{
+      const data=await fetchQ(sym);
+      MD[sym]=data;
+      ok++;
+      lastUpd=new Date();
+      // 每筆資料到齊就立刻渲染，消除等待卡頓
+      renderHome();
+      if(sym==='^TWII')renderTrend();
+    }catch(e){
+      console.warn(sym,e.message);
+    }
+  }));
+  if(ok>0)saveCache(); // 全部跑完後存快取
+  return ok>0;
+}
+
+function fp(p){
+  if(!p&&p!==0)return'—';
+  return p>=1000?p.toLocaleString('zh-TW',{maximumFractionDigits:0}):p.toFixed(2);
+}
+function chg(p,v){const a=p-v,c=(a/v)*100;return{a,c};}
+function col(c){return c>=0?'var(--ac)':'var(--rd)'}
+function arr(c){return c>=0?'▲':'▼'}
+
+function renderHome(){
+  const tw=MD['^TWII'];
+  const hp=document.getElementById('hp');
+  if(!tw){
+    hp.innerHTML='<div class="errbox">資料載入失敗<br><small>請確認網路後點右上角「更新」</small></div>';
+    return;
+  }
+  const{a,c}=chg(tw.price,tw.prev);
+  hp.innerHTML='<span style="color:'+col(c)+'">'+fp(tw.price)+'</span>';
+  document.getElementById('hc').innerHTML='<span style="color:'+col(c)+'">'+arr(c)+' '+Math.abs(a).toFixed(0)+' ('+( c>=0?'+':'')+c.toFixed(2)+'%)</span>';
+  document.getElementById('ht').textContent='更新：'+(lastUpd?lastUpd.toLocaleTimeString('zh-TW'):'—')+'　'+(tw.state==='REGULAR'?'交易中 🟢':'休市 ⚫');
+
+  const tags=[];
+  if(c>1)tags.push('<span class="tag tg">強勢上漲</span>');
+  else if(c>0)tags.push('<span class="tag tg">小幅上漲</span>');
+  else if(c>-1)tags.push('<span class="tag tr">小幅下跌</span>');
+  else tags.push('<span class="tag tr">明顯下跌</span>');
+  if(Math.abs(c)<0.3)tags.push('<span class="tag ta">盤整格局</span>');
+  tags.push('<span class="tag tb">Yahoo Finance</span>');
+  document.getElementById('htags').innerHTML=tags.join('');
+
+  // Tickers
+  const strip=document.getElementById('strip');
+  const list=['0050.TW','0056.TW','2330.TW','2317.TW','^N225','^GSPC'];
+  strip.innerHTML=list.map(sym=>{
+    const d=MD[sym];if(!d)return'';
+    const{c:cc}=chg(d.price,d.prev);
+    return`<div class="tc"><div class="ts">${SYMS[sym]}</div><div class="tv" style="color:${col(cc)}">${fp(d.price)}</div><div class="tch" style="color:${col(cc)}">${arr(cc)} ${Math.abs(cc).toFixed(2)}%</div></div>`;
+  }).join('');
+
+  // Signals
+  const rsi=Math.min(85,Math.max(20,50+c*4));
+  const c50=MD['0050.TW']?chg(MD['0050.TW'].price,MD['0050.TW'].prev).c:0;
+  const sigs=[
+    c>0.5?{d:'dg',m:'大盤今日強漲 '+c.toFixed(2)+'%',s:'整體偏多，持股信心度高'}:
+    c>0?{d:'da',m:'大盤小漲 '+c.toFixed(2)+'%',s:'方向偏多但力道偏弱，觀望為主'}:
+    c>-0.5?{d:'da',m:'大盤小跌 '+Math.abs(c).toFixed(2)+'%',s:'謹慎操作，避免重壓'}:
+    {d:'dr',m:'大盤明顯下跌 '+c.toFixed(2)+'%',s:'偏空格局，建議降低持股'},
+    c50>=0?{d:'dg',m:'0050 今日上漲，ETF 正向',s:'台灣藍籌股整體走強'}:{d:'da',m:'0050 今日下跌，ETF 承壓',s:'可等待更好買點'},
+    {d:rsi>65?'dr':rsi<40?'dg':'da',m:'技術面 RSI 估算約 '+rsi.toFixed(0),s:rsi>65?'接近超買區，注意獲利了結':rsi<40?'接近超賣區，注意反彈機會':'中性區間，可正常操作'}
+  ];
+  const sigHtml=sigs.map(s=>`<div class="sig"><div class="sdot ${s.d}"></div><div><div class="sm">${s.m}</div><div class="ss">${s.s}</div></div></div>`).join('');
+  document.getElementById('sig-home').innerHTML=sigHtml;
+  const env=document.getElementById('sig-env');
+  if(env)env.innerHTML=sigHtml;
+}
+
+function renderTrend(){
+  const tw=MD['^TWII'];if(!tw)return;
+  const{a,c}=chg(tw.price,tw.prev);
+  const rsi=Math.min(85,Math.max(20,50+c*4));
+  document.getElementById('igrid').innerHTML=`
+    <div class="ic"><div class="il">台股加權</div><div class="iv" style="color:${col(c)}">${fp(tw.price)}</div><div class="isub" style="color:${col(c)}">${arr(c)} ${Math.abs(c).toFixed(2)}%</div></div>
+    <div class="ic"><div class="il">RSI 估算值</div><div class="iv" style="color:${rsi>65?'var(--rd)':rsi<40?'var(--ac2)':'var(--am)'}">${rsi.toFixed(0)}</div><div class="isub" style="color:${rsi>65?'var(--rd)':rsi<40?'var(--ac2)':'var(--am)'}">${rsi>65?'超買警戒':rsi<40?'超賣機會':'中性區間'}</div></div>
+    <div class="ic"><div class="il">今日漲跌點</div><div class="iv" style="color:${col(c)}">${c>=0?'+':''}${a.toFixed(0)}</div><div class="isub" style="color:var(--mu2)">較前日收盤</div></div>
+    <div class="ic"><div class="il">趨勢判斷</div><div class="iv" style="font-size:18px;color:${c>0.5?'var(--ac)':c>0?'var(--ac2)':c>-0.5?'var(--am)':'var(--rd)'}">${c>0.5?'強多':c>0?'偏多':c>-0.5?'偏空':'強空'}</div></div>`;
+
+  const pct=(rsi-20)/65;
+  document.getElementById('rptr').style.left=(pct*100).toFixed(1)+'%';
+  document.getElementById('rdesc').textContent='RSI 估算 '+rsi.toFixed(0)+'：'+(rsi>65?'超買區，考慮部分獲利了結，謹慎追高':rsi<40?'超賣區，可留意逢低買入機會，需量能配合':'中性安全區間，可正常持股或建立新倉位');
+
+  const base=tw.price;
+  document.getElementById('macard').innerHTML=`
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+      <div><div style="font-size:11px;color:var(--mu2);margin-bottom:3px">5日均（估）</div><div style="font-weight:800;font-family:var(--fh);color:${col(c)}">${(base*0.985).toFixed(0)}</div></div>
+      <div><div style="font-size:11px;color:var(--mu2);margin-bottom:3px">20日均（估）</div><div style="font-weight:800;font-family:var(--fh);color:var(--ac2)">${(base*0.972).toFixed(0)}</div></div>
+      <div><div style="font-size:11px;color:var(--mu2);margin-bottom:3px">60日均（估）</div><div style="font-weight:800;font-family:var(--fh);color:var(--mu2)">${(base*0.948).toFixed(0)}</div></div>
+    </div>
+    <div style="background:var(--sf2);border-radius:10px;padding:10px;font-size:12px;color:var(--mu2);line-height:1.65">
+      ${c>=0?'✦ 股價站在均線上方，<span style="color:var(--ac);font-weight:600">多頭排列</span>格局，趨勢向上有撐。':'✦ 股價低於均線，<span style="color:var(--rd);font-weight:600">空頭排列</span>格局，注意跌破支撐風險。'}
+      <br>✦ 均線數值依當日收盤估算，僅供趨勢方向參考。
+    </div>`;
+}
+
+async function fetchNews(){
+  try{
+    const target=encodeURIComponent('https://query1.finance.yahoo.com/v1/finance/search?q=%E5%8F%B0%E7%81%A3%E8%82%A1%E5%B8%82&newsCount=6&quotesCount=0');
+    const res=await fetch('https://api.allorigins.win/get?url='+target,{signal:AbortSignal.timeout(8000)});
+    if(!res.ok)throw new Error('err');
+    const outer=await res.json();
+    const json=JSON.parse(outer.contents);
+    const items=(json.news||[]).slice(0,6);
+    if(!items.length)throw new Error('empty');
+    document.getElementById('news-box').innerHTML=items.map(n=>{
+      const d=new Date(n.providerPublishTime*1000);
+      const ago=Math.round((Date.now()-d)/60000);
+      const t=ago<60?ago+'分鐘前':Math.round(ago/60)+'小時前';
+      return`<a class="ni2" href="${n.link}" target="_blank" rel="noopener"><div class="nsrc">${n.publisher||'財經新聞'}</div><div class="ntitle">${n.title}</div><div class="ntime">${t}</div></a>`;
+    }).join('');
+  }catch(e){
+    document.getElementById('news-box').innerHTML='<div style="font-size:12px;color:var(--mu2);padding:8px;text-align:center">新聞載入中... 請稍後點「更新」</div>';
+  }
+}
+
+async function refresh(){
+  const btn=document.getElementById('rbtn');
+  btn.classList.add('spin');btn.disabled=true;
+  try{
+    await fetchAll();
+    await fetchNews();
+  }catch(e){console.error(e);}
+  btn.classList.remove('spin');btn.disabled=false;
+}
+
+// 先從快取秒開，再背景抓新資料
+loadCache();
+refresh();
+setInterval(refresh,3*60*1000); // auto-refresh every 3 min
+</script>
+</body>
+</html>
